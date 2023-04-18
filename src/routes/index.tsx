@@ -6,7 +6,7 @@ export function Routes() {
     const { colors } = useTheme();
 
     const theme = DefaultTheme;
-    theme.colors.background = colors.gray[200]
+    theme.colors.background = colors.white
 
     return (
         <NavigationContainer

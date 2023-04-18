@@ -3,25 +3,26 @@ import { extendTheme } from "native-base";
 export const THEME = extendTheme({
     colors: {
         blue: {
-            500: '#647AC7',
-            700: '#364d9d',
+            'light': '#647AC7',
+            'normal': '#364d9d',
         },
         red: {
-            200: '#EE7979'
+            'light': '#EE7979'
         },
         gray: {
-            100: '#F7F7F8',
-            200: '#EDECEE',
-            300: '#D9D8DA',
-            400: '#9F9BA1',
-            500: '#5F5B62',
-            600: '#3E3A40',
-            700: '#1A181B',
+            7: '#F7F7F8',
+            6: '#EDECEE',
+            5: '#D9D8DA',
+            4: '#9F9BA1',
+            3: '#5F5B62',
+            2: '#3E3A40',
+            1: '#1A181B',
         },
+        white: '#FFFFFF',
     },
 
     fonts: {
-        heading: 'Karla_700Bold ',
+        heading: 'Karla_700Bold',
         body: 'Karla_400Regular'
     },
 
