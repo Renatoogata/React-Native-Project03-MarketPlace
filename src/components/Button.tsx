@@ -24,7 +24,7 @@ export function Button({ title, variant, iconName = null, ...rest }: Props) {
                 alignItems='center'
             >
                 {
-                    iconName === null ? <></> :
+                    iconName === null ? null :
                         <Icon
                             as={MaterialCommunityIcons}
                             name={iconName}
