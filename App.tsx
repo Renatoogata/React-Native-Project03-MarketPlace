@@ -4,6 +4,7 @@ import { useFonts, Karla_400Regular, Karla_700Bold } from '@expo-google-fonts/ka
 
 import { THEME } from '@theme/index';
 import { Loading } from '@components/Loading';
+import { Routes } from '@routes/index';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Karla_400Regular, Karla_700Bold })
@@ -16,7 +17,7 @@ export default function App() {
         translucent
       />
 
-      {fontsLoaded ? <Loading /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 }
