@@ -4,7 +4,7 @@ export const THEME = extendTheme({
     colors: {
         blue: {
             'light': '#647AC7',
-            'normal': '#364d9d',
+            'regular': '#364d9d',
         },
         red: {
             'light': '#EE7979'
@@ -33,4 +33,10 @@ export const THEME = extendTheme({
         lg: 20,
         xl: 24,
     },
+
+    sizes: {
+        11: 42,
+        14: 56,
+        33: 148
+    }
 })

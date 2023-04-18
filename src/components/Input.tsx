@@ -14,13 +14,14 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
             mb={4}
         >
             <NativeBaseInput
-                bg="gray.7"
+                bg="white"
                 h={12}
                 px={4}
                 borderWidth={0}
                 fontSize='md'
                 color="gray.2"
                 fontFamily="body"
+                rounded="md"
 
                 isInvalid={invalid}
                 _invalid={{
@@ -28,8 +29,11 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
                     borderColor: "red.light"
                 }}
 
-                placeholderTextColor="gray.3"
+                placeholderTextColor="gray.4"
 
+                _focus={{
+                    bg: 'gray.7'
+                }}
                 {...rest}
             />
 

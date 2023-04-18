@@ -2,6 +2,9 @@ import { Center, Heading, ScrollView, Text, VStack } from "native-base";
 
 import LogoSvg from '@assets/logo.svg'
 
+import { Input } from "@components/Input";
+import { Button } from "@components/Button";
+
 export function SignIn() {
     return (
         <ScrollView
@@ -43,6 +46,23 @@ export function SignIn() {
                         Acesse sua conta
                     </Text>
 
+                    <Input
+                        mt={4}
+                        placeholder="E-mail"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+
+                    <Input
+                        placeholder="Senha"
+                        secureTextEntry
+                    />
+
+                    <Button
+                        title="Entrar"
+                        variant="blue"
+                        iconName="power-standby"
+                    />
 
                 </Center>
             </VStack>
