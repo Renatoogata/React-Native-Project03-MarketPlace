@@ -1,4 +1,4 @@
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { useTheme } from "native-base";
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 
@@ -11,8 +11,7 @@ import { Product } from '@screens/Product';
 import HomeIcon from '@assets/IconHome.svg'
 import MyProductsIcon from '@assets/IconMyProducts.svg'
 import LogOutIcon from '@assets/IconLogOut.svg'
-import { Loading } from '@components/Loading';
-import { useEffect } from 'react';
+
 
 
 type AppRoutes = {
@@ -21,6 +20,8 @@ type AppRoutes = {
     myproducts: undefined
     logout: undefined
 }
+
+export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
 
 const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
