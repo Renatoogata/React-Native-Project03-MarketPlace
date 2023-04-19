@@ -75,7 +75,7 @@ export function Input({ errorMessage = null, isInvalid, iconName = null, ...rest
                     </TouchableOpacity>
                 </Box>
             </HStack>
-            <FormControl.ErrorMessage _text={{ color: 'red.light' }}>
+            <FormControl.ErrorMessage _text={{ color: 'red.light' }} mt={0}>
                 {errorMessage}
             </FormControl.ErrorMessage>
         </FormControl>
