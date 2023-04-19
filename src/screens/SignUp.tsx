@@ -1,4 +1,4 @@
-import { Box, Center, Heading, ScrollView, Text, VStack, useToast } from "native-base";
+import { Box, Center, Heading, ScrollView, Text, VStack, useToast, Skeleton } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from 'react-hook-form';
 
@@ -14,6 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 
 import MiniLogoSvg from '@assets/miniLogo.svg'
+import Avatar from '@assets/avatar.png'
 
 import { UserPhoto } from "@components/UserPhoto";
 import { Input } from "@components/Input";
@@ -48,6 +49,8 @@ const signUpSchema = yup.object({
     phone: yup.string().required('Informe o número de telefone').matches(phoneRegExp, 'Número de telefone inválido.')
 })
 
+const PHOTO_SIZE = 24;
+
 export function SignUp() {
     const [isLoading, setIsLoading] = useState(false);
     const [userImageSelected, setUserImageSelected] = useState({ selected: false } as UserImageProps);
@@ -67,6 +70,7 @@ export function SignUp() {
 
     async function handleUserPhotoSelect() {
         try {
+            setIsLoading(true)
             const photoSelect = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 quality: 1,
@@ -112,6 +116,8 @@ export function SignUp() {
             }
         } catch (error) {
             console.log("Erro ->", error)
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -204,12 +210,26 @@ export function SignUp() {
                     <Box
                         mt={7}
                     >
-                        <UserPhoto
-                            source={{ uri: 'https://img.assinaja.com/upl/lojas/mundosinfinitos/imagens/foto-one-piece.png' }}
-                            alt="Foto de Perfil"
-                            size={24}
-                            onPress={handleUserPhotoSelect}
-                        />
+                        {
+                            isLoading ?
+                                <Skeleton
+                                    w={PHOTO_SIZE}
+                                    h={PHOTO_SIZE}
+                                    rounded="full"
+                                    startColor="blue.light"
+                                /> :
+
+                                <UserPhoto
+                                    source={
+                                        userImageSelected.selected
+                                            ? { uri: userImageSelected.photo.uri }
+                                            : Avatar
+                                    }
+                                    alt="Foto de Perfil"
+                                    size={PHOTO_SIZE}
+                                    onPress={handleUserPhotoSelect}
+                                />
+                        }
                     </Box>
 
                     <Controller

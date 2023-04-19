@@ -71,26 +71,27 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
 
     async function signOutMenu() {
-        try {
-            Alert.alert("Logout", "Deseja mesmo sair?", [
-                {
-                    text: 'Sim',
-                    onPress: async () => {
+        Alert.alert("Logout", "Deseja mesmo sair?", [
+            {
+                text: 'Sim',
+                onPress: async () => {
+                    try {
                         setIsLoadingUserStorageData(true);
                         setUser({} as UserDTO);
                         await storageUserRemove();
                         await storageAuthTokenRemove();
+                    } catch (error) {
+                        throw error
+                    } finally {
                         setIsLoadingUserStorageData(false);
                     }
-                },
-                {
-                    text: 'Não',
                 }
-            ])
+            },
+            {
+                text: 'Não',
+            }
+        ]);
 
-        } catch (error) {
-            throw error
-        }
     }
 
     async function loadUserData() { // Checar se existe registro no Storage
