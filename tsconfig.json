@@ -28,6 +28,12 @@
       "@services/*": [
         "./src/services/*"
       ],
+      "@contexts/*": [
+        "./src/contexts/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ]
     }
   }
 }

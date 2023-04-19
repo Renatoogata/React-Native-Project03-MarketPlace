@@ -1,8 +1,12 @@
-import { Box, Center, Heading, ScrollView, Text, VStack } from "native-base";
+import { Box, Center, Heading, ScrollView, Text, VStack, useToast } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from 'react-hook-form';
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
+import { api } from '@services/api';
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
@@ -13,6 +17,7 @@ import { UserPhoto } from "@components/UserPhoto";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useState } from "react";
+import { AppError } from "@utils/AppError";
 
 
 type FormDataProps = {
@@ -22,6 +27,15 @@ type FormDataProps = {
     confirm_password: string;
     phone: string;
 }
+
+type UserImageProps = {
+    selected: boolean;
+    photo: {
+        uri: string;
+        name: string;
+        type: string;
+    };
+};
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -35,26 +49,113 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
     const [isLoading, setIsLoading] = useState(false);
+    const [userImageSelected, setUserImageSelected] = useState({ selected: false } as UserImageProps);
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         resolver: yupResolver(signUpSchema)
     })
 
+    const userForm = new FormData();
+
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
-    function handleSignUp({ confirm_password, email_login, name, password, phone }: FormDataProps) {
+    const toast = useToast();
+
+    async function handleUserPhotoSelect() {
         try {
-            setIsLoading(true)
-            console.log({
-                'name: ': name,
-                'email: ': email_login,
-                'phone: ': phone,
-                'password: ': password,
-                'confirm password: ': confirm_password
-            })
+            const photoSelect = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                aspect: [4, 4],
+                allowsEditing: true
+            });
+
+            if (photoSelect.canceled) {
+                return;
+            }
+
+            if (photoSelect.assets[0].uri) {
+                const PhotoInfo = await FileSystem.getInfoAsync(photoSelect.assets[0].uri)
+
+                if (PhotoInfo.size && (PhotoInfo.size / 1024 / 1024) > 5) {
+                    return toast.show({
+                        title: 'Tamanho da Imagem invalido',
+                        _title: { alignSelf: 'center' },
+                        description: 'Essa Imagem é muito grande. Escolha uma de até 5 MB',
+                        placement: 'top',
+                        bgColor: 'red.light'
+                    })
+                }
+
+                const fileExtension = photoSelect.assets[0].uri.split('.').pop();
+
+                const photoFile = {
+                    name: `${fileExtension}`.toLowerCase(),
+                    uri: photoSelect.assets[0].uri,
+                    type: `${photoSelect.assets[0].type}/${fileExtension}`
+                } as any
+
+                setUserImageSelected({
+                    selected: true,
+                    photo: { ...photoFile }
+                })
+
+                toast.show({
+                    title: 'Imagem selecionada com sucesso',
+                    placement: 'top',
+                    bgColor: 'blue.light'
+                });
+            }
+        } catch (error) {
+            console.log("Erro ->", error)
+        }
+    }
+
+    async function handleSignUp({ email_login, name, password, phone }: FormDataProps) {
+        try {
+            if (!userImageSelected.selected) {
+                toast.show({
+                    title: "Porfavor Selecione uma foto",
+                    placement: "top",
+                    bgColor: 'red.light'
+                })
+            }
+
+            //const { name } = getValues();
+
+            const userImage = {
+                ...userImageSelected.photo,
+                name: `${name}.${userImageSelected.photo.name}`.toLowerCase(),
+            } as any
+
+            userForm.append("avatar", userImage);
+            userForm.append("name", name);
+            userForm.append("email", email_login.toLowerCase());
+            userForm.append("tel", phone);
+            userForm.append("password", password)
+
+            setIsLoading(true);
+
+            await api.post("/users", userForm, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
 
         } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível criar a conta. Tente novamente mais tarde."
 
+            if (isAppError) {
+                toast.show({
+                    title,
+                    placement: 'top',
+                    bgColor: 'red.light'
+                })
+            }
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -103,6 +204,7 @@ export function SignUp() {
                             source={{ uri: 'https://img.assinaja.com/upl/lojas/mundosinfinitos/imagens/foto-one-piece.png' }}
                             alt="Foto de Perfil"
                             size={24}
+                            onPress={handleUserPhotoSelect}
                         />
                     </Box>
 
