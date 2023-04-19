@@ -6,7 +6,9 @@ import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
+
 import { api } from '@services/api';
+import { useAuth } from "@hooks/useAuth";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
@@ -18,7 +20,6 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useState } from "react";
 import { AppError } from "@utils/AppError";
-
 
 type FormDataProps = {
     name: string;
@@ -51,6 +52,9 @@ export function SignUp() {
     const [isLoading, setIsLoading] = useState(false);
     const [userImageSelected, setUserImageSelected] = useState({ selected: false } as UserImageProps);
 
+    const toast = useToast();
+    const { signIn } = useAuth();
+
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         resolver: yupResolver(signUpSchema)
     })
@@ -59,7 +63,7 @@ export function SignUp() {
 
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
-    const toast = useToast();
+
 
     async function handleUserPhotoSelect() {
         try {
@@ -142,7 +146,7 @@ export function SignUp() {
                 },
             });
 
-
+            await signIn(email_login, password);
         } catch (error) {
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : "Não foi possível criar a conta. Tente novamente mais tarde."
