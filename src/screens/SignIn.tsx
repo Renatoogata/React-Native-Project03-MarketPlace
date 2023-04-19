@@ -21,8 +21,8 @@ export function SignIn() {
         >
             <VStack
                 py={16}
-                px={10}
                 rounded="3xl"
+                px={12}
                 bg="gray.6"
             >
                 <Center
@@ -75,7 +75,7 @@ export function SignIn() {
             </VStack>
 
             <VStack
-                p={10}
+                p={12}
                 flex={1}
             >
                 <Center>

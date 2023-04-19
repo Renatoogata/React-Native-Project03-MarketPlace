@@ -31,14 +31,14 @@ export function Input({ errorMessage = null, isInvalid, iconName = null, ...rest
                 <NativeBaseInput
                     flex={1}
                     bg="white"
-                    h={12}
+                    h={11}
                     px={4}
                     borderWidth={0}
                     fontSize='md'
                     color="gray.2"
                     fontFamily="body"
                     rounded="md"
-                    secureTextEntry={showPassword}
+                    secureTextEntry={iconName! != null ? showPassword : false}
 
                     isInvalid={invalid}
                     _invalid={{

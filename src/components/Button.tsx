@@ -11,7 +11,7 @@ export function Button({ title, variant, iconName = null, ...rest }: Props) {
     return (
         <ButtonNativeBase
             w='full'
-            h={12}
+            h={11}
             bg={variant === 'gray5' ? 'gray.5' : variant === 'blue' ? 'blue.light' : 'gray.1'}
             rounded="sm"
             _pressed={{
