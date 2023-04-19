@@ -5,8 +5,11 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { useAuth } from "@hooks/useAuth";
 
 import LogoSvg from '@assets/logo.svg'
+
+import { AppError } from "@utils/AppError";
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
@@ -25,6 +28,7 @@ const logInSchema = yup.object({
 export function SignIn() {
     const [isLoading, setIsLoading] = useState(false)
     const toast = useToast();
+    const { signIn } = useAuth();
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         resolver: yupResolver(logInSchema)
@@ -33,12 +37,20 @@ export function SignIn() {
     const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
 
-    function handleLogin({ email_login, password }: FormDataProps) {
+    async function handleLogin({ email_login, password }: FormDataProps) {
         try {
             setIsLoading(true);
-            console.log(email_login, password)
+            await signIn(email_login, password);
         } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível entrar. Tente mais tarde.'
 
+            setIsLoading(false);
+            toast.show({
+                title,
+                placement: 'top',
+                bgColor: 'red.light',
+            })
         }
     }
 
