@@ -5,11 +5,13 @@ import { UserDTO } from "src/dtos/UserDTO";
 
 import { storageUserRemove, storageUserSave, storageUserGet } from "@storage/storageUser";
 import { storageAuthTokenSave, storageAuthTokenRemove, storageAuthTokenGet } from "@storage/storageAuthToken"
+import { Alert } from "react-native";
 
 export type AuthContextDataProps = {
     user: UserDTO;
     signIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>
+    signOutMenu: () => Promise<void>
     isLoadingUserStorageData: boolean;
 }
 
@@ -68,6 +70,29 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         }
     }
 
+    async function signOutMenu() {
+        try {
+            Alert.alert("Logout", "Deseja mesmo sair?", [
+                {
+                    text: 'Sim',
+                    onPress: async () => {
+                        setIsLoadingUserStorageData(true);
+                        setUser({} as UserDTO);
+                        await storageUserRemove();
+                        await storageAuthTokenRemove();
+                        setIsLoadingUserStorageData(false);
+                    }
+                },
+                {
+                    text: 'Não',
+                }
+            ])
+
+        } catch (error) {
+            throw error
+        }
+    }
+
     async function loadUserData() { // Checar se existe registro no Storage
         try {
             setIsLoadingUserStorageData(true);
@@ -101,6 +126,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             user,
             signIn,
             signOut,
+            signOutMenu,
             isLoadingUserStorageData
         }}>
             {children}
