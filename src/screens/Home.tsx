@@ -1,5 +1,5 @@
-import { HStack, Icon, ScrollView, Text, useTheme, VStack } from "native-base";
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Box, HStack, Icon, ScrollView, Text, useTheme, VStack } from "native-base";
+import { MaterialCommunityIcons, SimpleLineIcons, Entypo } from '@expo/vector-icons'
 
 import { useAuth } from "@hooks/useAuth";
 import { api } from "@services/api";
@@ -130,9 +130,43 @@ export function Home() {
                     Compre produtos variados
                 </Text>
 
-                <Input
-                    placeholder="Buscar anúncio"
-                />
+                <Box
+                    mt={2}
+                >
+                    <Box
+                        flexDirection='row'
+                        position='absolute'
+                        zIndex={1}
+                        right={1}
+                        mt={2}
+                        mr={2}
+                    >
+                        <TouchableOpacity>
+                            <Icon
+                                as={Entypo}
+                                name="magnifying-glass"
+                                size={7}
+                                color='gray.2'
+                            />
+                        </TouchableOpacity>
+                        <Box
+                            w={0.8}
+                            mx={3}
+                            bg='gray.3'
+                        ></Box>
+                        <TouchableOpacity>
+                            <Icon
+                                as={SimpleLineIcons}
+                                name='equalizer'
+                                size={6}
+                                color='gray.2'
+                            />
+                        </TouchableOpacity>
+                    </Box>
+                    <Input
+                        placeholder="Buscar anúncio"
+                    />
+                </Box>
             </VStack>
         </ScrollView>
     )
