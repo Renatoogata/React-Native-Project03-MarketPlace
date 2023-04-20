@@ -13,6 +13,7 @@ import { AppError } from "@utils/AppError";
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
+import { InputPassword } from "@components/InputPassword";
 import { Button } from "@components/Button";
 
 type FormDataProps = {
@@ -119,9 +120,8 @@ export function SignIn() {
                         control={control}
                         name="password"
                         render={({ field: { onChange, value } }) => (
-                            <Input
+                            <InputPassword
                                 placeholder="Senha"
-                                iconName="eye-outline"
                                 onChangeText={onChange}
                                 value={value}
                                 errorMessage={errors.password?.message}

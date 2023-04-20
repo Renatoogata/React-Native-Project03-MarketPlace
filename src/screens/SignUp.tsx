@@ -18,6 +18,7 @@ import Avatar from '@assets/avatar.png'
 
 import { UserPhoto } from "@components/UserPhoto";
 import { Input } from "@components/Input";
+import { InputPassword } from "@components/InputPassword";
 import { Button } from "@components/Button";
 import { useState } from "react";
 import { AppError } from "@utils/AppError";
@@ -280,9 +281,8 @@ export function SignUp() {
                         control={control}
                         name="password"
                         render={({ field: { onChange, value } }) => (
-                            <Input
+                            <InputPassword
                                 placeholder="Senha"
-                                iconName="eye-outline"
                                 onChangeText={onChange}
                                 value={value}
                                 errorMessage={errors.password?.message}
@@ -294,9 +294,8 @@ export function SignUp() {
                         control={control}
                         name="confirm_password"
                         render={({ field: { onChange, value } }) => (
-                            <Input
+                            <InputPassword
                                 placeholder="Confirmar senha"
-                                iconName="eye-outline"
                                 onChangeText={onChange}
                                 value={value}
                                 errorMessage={errors.confirm_password?.message}

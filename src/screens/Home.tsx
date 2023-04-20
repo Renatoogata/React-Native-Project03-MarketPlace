@@ -10,6 +10,7 @@ import MyProductsIcon from '@assets/IconMyProducts.svg'
 import { UserPhoto } from "@components/UserPhoto";
 import { Button } from "@components/Button";
 import { TouchableOpacity } from "react-native";
+import { Input } from "@components/Input";
 
 export function Home() {
     const { colors } = useTheme();
@@ -74,7 +75,7 @@ export function Home() {
                 </Text>
                 <HStack
                     style={{ backgroundColor: 'rgba(100, 122, 199, 0.1)' }}
-                    mt={4}
+                    mt={3}
                     p={3}
                     alignItems='center'
                     rounded='md'
@@ -121,8 +122,17 @@ export function Home() {
                             />
                         </HStack>
                     </TouchableOpacity>
-
                 </HStack>
+                <Text
+                    pt={8}
+                    color='gray.3'
+                >
+                    Compre produtos variados
+                </Text>
+
+                <Input
+                    placeholder="Buscar anúncio"
+                />
             </VStack>
         </ScrollView>
     )
