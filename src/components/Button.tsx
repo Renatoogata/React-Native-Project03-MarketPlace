@@ -30,7 +30,7 @@ export function Button({ title, variant, iconName = null, ...rest }: Props) {
                             name={iconName}
                             color={variant === 'gray5' ? 'gray.3' : variant === 'blue' ? 'gray.6' : 'gray.6'}
                             size={4}
-                            mr={2}
+                            mr={1}
                         />
                 }
 

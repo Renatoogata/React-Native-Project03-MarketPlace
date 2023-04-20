@@ -66,8 +66,6 @@ export function SignUp() {
 
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
-
-
     async function handleUserPhotoSelect() {
         try {
             setIsLoading(true)
@@ -217,6 +215,7 @@ export function SignUp() {
                                     h={PHOTO_SIZE}
                                     rounded="full"
                                     startColor="blue.light"
+                                    speed={2.5}
                                 /> :
 
                                 <UserPhoto
@@ -228,6 +227,8 @@ export function SignUp() {
                                     alt="Foto de Perfil"
                                     size={PHOTO_SIZE}
                                     onPress={handleUserPhotoSelect}
+                                    iconEdit
+                                    border={3}
                                 />
                         }
                     </Box>
