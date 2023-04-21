@@ -20,7 +20,8 @@ module.exports = function (api) {
             '@hooks': './src/hooks',
           }
         }
-      ]
+      ],
+      'react-native-reanimated/plugin',
     ]
   };
 };

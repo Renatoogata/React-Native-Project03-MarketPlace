@@ -5,10 +5,10 @@ type Props = {
     type: 'NEW' | 'USED'
 }
 
-export function ProductType({ name, type }: Props) {
+export function ProductType({ name, type, ...rest }: Props) {
     return (
         <Text
-            bg={type === 'NEW' ? 'blue.regular' : 'gra.2'}
+            bg={type === 'NEW' ? 'blue.regular' : 'gray.2'}
             color='gray.7'
             fontFamily='heading'
             fontSize='xs'
@@ -18,8 +18,11 @@ export function ProductType({ name, type }: Props) {
             textAlign='center'
             mt={1}
             mr={1}
+
+            {...rest}
         >
             {name}
         </Text>
+
     )
 }
