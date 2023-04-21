@@ -1,6 +1,4 @@
-import { Box, FormControl, HStack, Icon, IInputProps, Input as NativeBaseInput } from "native-base";
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { TouchableOpacity } from "react-native";
+import { FormControl, IInputProps, Input as NativeBaseInput } from "native-base";
 
 
 type Props = IInputProps & {
@@ -16,7 +14,6 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
             mb={4}
         >
             <NativeBaseInput
-                flex={1}
                 bg="white"
                 h={11}
                 px={4}

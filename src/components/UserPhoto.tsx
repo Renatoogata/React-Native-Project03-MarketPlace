@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Box, Icon } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -8,9 +7,11 @@ type Props = IImageProps & TouchableOpacityProps & {
     size: number
     border: number
     iconEdit?: boolean
+    borderColor?: 'PRIMARY' | 'SECONDARY'
 }
 
-export function UserPhoto({ size, iconEdit = false, border, ...rest }: Props) {
+
+export function UserPhoto({ size, iconEdit = false, border, borderColor = 'PRIMARY', ...rest }: Props) {
     return (
         <Box>
             <Image
@@ -18,7 +19,7 @@ export function UserPhoto({ size, iconEdit = false, border, ...rest }: Props) {
                 h={size}
                 rounded="full"
                 borderWidth={border}
-                borderColor="blue.light"
+                borderColor={borderColor === 'PRIMARY' ? "blue.light" : 'gray.7'}
 
                 {...rest}
             />
