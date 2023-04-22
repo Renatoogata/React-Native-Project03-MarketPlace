@@ -13,5 +13,6 @@ export type ProductDTO = {
     payment_methods: PaymentMethodDTO[];
     user?: {
         avatar: string;
+        name: string;
     };
 };
