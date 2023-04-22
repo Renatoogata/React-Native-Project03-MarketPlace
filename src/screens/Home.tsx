@@ -41,6 +41,7 @@ export function Home() {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const [activeProducts, setActiveProducts] = useState<ProductDTO[]>([]);
     const [products, setProducts] = useState<ProductDTO[]>([]);
     const [isNew, setIsNew] = useState<boolean>();
     const [acceptTrade, setAcceptTrade] = useState<boolean>();
@@ -109,8 +110,10 @@ export function Home() {
         try {
             setIsLoading(true);
             const response = await api.get('/products')
-
             setProducts(response.data);
+
+            const myProducts = await api.get('/users/products')
+            setActiveProducts(myProducts.data);
 
         } catch (error) {
             const isAppError = error instanceof AppError;
@@ -201,7 +204,7 @@ export function Home() {
                         fontFamily='heading'
                         mb={-1}
                     >
-                        4
+                        {activeProducts.length}
                     </Text>
                     <Text>
                         anúncios ativos
