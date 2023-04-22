@@ -1,6 +1,10 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Checkbox, FlatList, HStack, Icon, Switch, Text, useTheme, VStack } from "native-base";
 import { MaterialCommunityIcons, SimpleLineIcons, Entypo } from '@expo/vector-icons'
+import { Controller, useForm } from "react-hook-form";
+
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import BottomSheet from '@gorhom/bottom-sheet';
 
@@ -16,16 +20,30 @@ import { TouchableOpacity } from "react-native";
 import { Input } from "@components/Input";
 import { ProductCard } from "@components/ProductCard";
 import { ProductType } from "@components/ProductType";
+import { ProductDTO } from "src/dtos/ProductDTO";
 
+
+type FormDataProps = {
+    name: string;
+}
+
+const searchSchema = yup.object({
+    name: yup.string()
+})
 
 export function Home() {
     const { colors } = useTheme();
     const { user } = useAuth();
 
-    const [products, useProducts] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
-    const [isNew, setIsNew] = useState(true);
-    const [acceptTrade, setAcceptTrade] = useState(false);
+    const [products, setProducts] = useState<ProductDTO[]>([]);
+    const [isNew, setIsNew] = useState<boolean>();
+    const [acceptTrade, setAcceptTrade] = useState<boolean>();
     const [paymentMethods, setPaymentMethods] = useState<string[]>([])
+
+
+    const { control, handleSubmit } = useForm<FormDataProps>({
+        resolver: yupResolver(searchSchema)
+    })
 
 
     const bottomSheetRef = useRef<BottomSheet>(null);
@@ -44,10 +62,61 @@ export function Home() {
     }
 
     function handleResetFilter() {
-        setIsNew(true);
-        setAcceptTrade(false);
+        setIsNew(undefined);
+        setAcceptTrade(undefined);
         setPaymentMethods([]);
     }
+
+    async function handleSearchWithName(data: FormDataProps) {
+        try {
+            let paymentMethodsQuery = "";
+
+            paymentMethods.forEach((item) => {
+                paymentMethodsQuery = paymentMethodsQuery + `&payment_methods=${item}`;
+            });
+
+
+            const productsData = await api.get(`/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}`)
+
+            console.log("teste -->", productsData.data);
+
+        } catch (error) {
+            throw error;
+        }
+
+
+    }
+
+    async function fetchProduts() {
+        try {
+            const response = await api.get('/products')
+
+            setProducts(response.data);
+
+        } catch (error) {
+            throw (error);
+        }
+    }
+
+    useEffect(() => {
+        fetchProduts();
+    }, [])
+
+
+    // try {
+    //     let paymentMethodsQuery = "";
+
+    //     paymentMethods.forEach((item) => {
+    //         paymentMethodsQuery = paymentMethodsQuery + `&payment_methods=${item}`;
+    //     });
+
+    //     const productsData = await api.get(
+    //         `/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}${search.length > 0 && `&query=${search}`
+    //         }`
+    //     );
+    // } catch (error) {
+
+    // }
 
     return (
         <VStack
@@ -166,7 +235,9 @@ export function Home() {
                     mt={2}
                     mr={2}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleSubmit(handleSearchWithName)}
+                    >
                         <Icon
                             as={Entypo}
                             name="magnifying-glass"
@@ -188,21 +259,34 @@ export function Home() {
                         />
                     </TouchableOpacity>
                 </Box>
-                <Input
-                    placeholder="Buscar Anúncio"
+                <Controller
+                    control={control}
+                    name="name"
+                    render={({ field: { value, onChange } }) =>
+                        <Input
+                            placeholder="Buscar Anúncio"
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    }
                 />
-            </Box>
 
+
+            </Box>
 
             <FlatList
                 numColumns={2}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                 data={products}
-                keyExtractor={item => item}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
                     <ProductCard
-                        source={{ uri: 'https://wpblog.semexe.com/wp-content/uploads/2021/12/6_Ext_Ultravox-SSL-DIsc-Comp_SwiftCarbon_2021-1024x683.jpeg' }}
+                        source={{ uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }}
+                        avatar={item.user?.avatar}
+                        isNew={item.is_new}
+                        name={item.name}
+                        price={item.price}
                     />
                 )}
                 ListEmptyComponent={
@@ -259,17 +343,14 @@ export function Home() {
                             <HStack
                                 my={2}
                             >
-                                <TouchableOpacity onPress={() => setIsNew(true)} style={{ opacity: isNew ? 1 : 0.4 }}>
+                                <TouchableOpacity onPress={() => setIsNew(true)} style={{ opacity: isNew === true ? 1 : 0.4 }}>
                                     <ProductType
-                                        name="NOVO"
-                                        type="NEW"
-
+                                        isNew
                                     />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setIsNew(false)} style={{ opacity: isNew ? 0.4 : 1 }}>
+                                <TouchableOpacity onPress={() => setIsNew(false)} style={{ opacity: isNew === false ? 1 : 0.4 }}>
                                     <ProductType
-                                        name="USADO"
-                                        type="USED"
+                                        isNew={false}
                                     />
                                 </TouchableOpacity>
                             </HStack>

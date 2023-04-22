@@ -1,14 +1,13 @@
 import { Text } from "native-base";
 
 type Props = {
-    name: string;
-    type: 'NEW' | 'USED'
+    isNew: boolean
 }
 
-export function ProductType({ name, type, ...rest }: Props) {
+export function ProductType({ isNew, ...rest }: Props) {
     return (
         <Text
-            bg={type === 'NEW' ? 'blue.regular' : 'gray.2'}
+            bg={isNew === true ? 'blue.regular' : 'gray.2'}
             color='gray.7'
             fontFamily='heading'
             fontSize='xs'
@@ -21,7 +20,7 @@ export function ProductType({ name, type, ...rest }: Props) {
 
             {...rest}
         >
-            {name}
+            {isNew === true ? "NOVO" : "USADO"}
         </Text>
 
     )

@@ -10,10 +10,15 @@ import Avatar from '@assets/avatar.png'
 import { ProductType } from "./ProductType";
 
 
-type Props = IImageProps & TouchableOpacityProps;
+type Props = IImageProps & TouchableOpacityProps & {
+    avatar: string | undefined;
+    isNew: boolean;
+    name: string;
+    price: number;
+};
 
 
-export function ProductCard({ ...rest }: Props) {
+export function ProductCard({ avatar, isNew, name, price, ...rest }: Props) {
     const { user } = useAuth();
 
     return (
@@ -41,11 +46,7 @@ export function ProductCard({ ...rest }: Props) {
                         justifyContent='space-between'
                     >
                         <UserPhoto
-                            source={
-                                user.avatar
-                                    ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` }
-                                    : Avatar
-                            }
+                            source={{ uri: `${api.defaults.baseURL}/images/${avatar}` }}
                             size={8}
                             alt="Foto de perfil"
                             border={1.5}
@@ -55,8 +56,7 @@ export function ProductCard({ ...rest }: Props) {
                         />
 
                         <ProductType
-                            name="NOVO"
-                            type="NEW"
+                            isNew={isNew}
                         />
                     </HStack>
                 </TouchableOpacity>
@@ -65,8 +65,10 @@ export function ProductCard({ ...rest }: Props) {
             <Text
                 color='gray.2'
                 fontSize='sm'
+                numberOfLines={1}
+                flexShrink={1}
             >
-                Tênis Vermelho
+                {name}
             </Text>
 
             <Text
@@ -75,10 +77,11 @@ export function ProductCard({ ...rest }: Props) {
                 mt={-1}
             >
                 R$
+                {' '}
                 <Text
                     fontSize='sm'
                 >
-                    59,90
+                    {price}
                 </Text>
             </Text>
         </VStack>
