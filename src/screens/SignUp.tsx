@@ -114,7 +114,7 @@ export function SignUp() {
                 });
             }
         } catch (error) {
-            console.log("Erro ->", error)
+            throw (error)
         } finally {
             setIsLoading(false)
         }
@@ -129,8 +129,6 @@ export function SignUp() {
                     bgColor: 'red.light'
                 })
             }
-
-            //const { name } = getValues();
 
             const userImage = {
                 ...userImageSelected.photo,

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Checkbox, FlatList, HStack, Icon, Switch, Text, useTheme, VStack } from "native-base";
+import { Box, Checkbox, FlatList, HStack, Icon, Switch, Text, useTheme, useToast, VStack } from "native-base";
 import { MaterialCommunityIcons, SimpleLineIcons, Entypo } from '@expo/vector-icons'
 import { Controller, useForm } from "react-hook-form";
 
@@ -14,6 +14,8 @@ import { api } from "@services/api";
 import Avatar from '@assets/avatar.png'
 import MyProductsIcon from '@assets/IconMyProducts.svg'
 
+import { AppError } from "@utils/AppError";
+
 import { UserPhoto } from "@components/UserPhoto";
 import { Button } from "@components/Button";
 import { TouchableOpacity } from "react-native";
@@ -21,10 +23,11 @@ import { Input } from "@components/Input";
 import { ProductCard } from "@components/ProductCard";
 import { ProductType } from "@components/ProductType";
 import { ProductDTO } from "src/dtos/ProductDTO";
+import { Loading } from "@components/Loading";
 
 
 type FormDataProps = {
-    name: string;
+    name?: string;
 }
 
 const searchSchema = yup.object({
@@ -34,12 +37,14 @@ const searchSchema = yup.object({
 export function Home() {
     const { colors } = useTheme();
     const { user } = useAuth();
+    const toast = useToast();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const [products, setProducts] = useState<ProductDTO[]>([]);
     const [isNew, setIsNew] = useState<boolean>();
     const [acceptTrade, setAcceptTrade] = useState<boolean>();
-    const [paymentMethods, setPaymentMethods] = useState<string[]>([])
-
+    const [paymentMethods, setPaymentMethods] = useState<string[]>(['pix', 'boleto', 'cash', 'deposit', 'card'])
 
     const { control, handleSubmit } = useForm<FormDataProps>({
         resolver: yupResolver(searchSchema)
@@ -57,66 +62,72 @@ export function Home() {
 
     async function handleSearchProduct() {
         const productsData = await api.get(`/products/`);
-
-        console.log("teste -->", productsData.data)
     }
 
     function handleResetFilter() {
-        setIsNew(undefined);
-        setAcceptTrade(undefined);
-        setPaymentMethods([]);
+        try {
+            setIsLoading(true)
+            setIsNew(true);
+            setAcceptTrade(false);
+            setPaymentMethods(['pix', 'boleto', 'cash', 'deposit', 'card']);
+            fetchProduts();
+        } catch (error) {
+            throw (error)
+        } finally {
+            setBottomSheetOpen(false)
+            setIsLoading(false)
+        }
+
     }
 
-    async function handleSearchWithName(data: FormDataProps) {
+    async function handleSearchWithFilters(data?: FormDataProps) {
         try {
+            setIsLoading(true)
             let paymentMethodsQuery = "";
 
             paymentMethods.forEach((item) => {
                 paymentMethodsQuery = paymentMethodsQuery + `&payment_methods=${item}`;
             });
 
-
-            const productsData = await api.get(`/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}`)
-
-            console.log("teste -->", productsData.data);
+            if (data) {
+                const response = await api.get(`/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}&query=${data.name}`)
+                setProducts(response.data);
+            } else {
+                const response = await api.get(`/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}`)
+                setProducts(response.data);
+            }
 
         } catch (error) {
             throw error;
+        } finally {
+            setBottomSheetOpen(false)
+            setIsLoading(false)
         }
-
-
     }
 
     async function fetchProduts() {
         try {
+            setIsLoading(true);
             const response = await api.get('/products')
 
             setProducts(response.data);
 
         } catch (error) {
-            throw (error);
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível carregar os produtos"
+            toast.show({
+                title,
+                placement: 'top',
+                bg: 'red.light'
+            })
+        } finally {
+            setIsLoading(false)
         }
     }
 
     useEffect(() => {
         fetchProduts();
     }, [])
-
-
-    // try {
-    //     let paymentMethodsQuery = "";
-
-    //     paymentMethods.forEach((item) => {
-    //         paymentMethodsQuery = paymentMethodsQuery + `&payment_methods=${item}`;
-    //     });
-
-    //     const productsData = await api.get(
-    //         `/products/?is_new=${isNew}&accept_trade=${acceptTrade}${paymentMethodsQuery}${search.length > 0 && `&query=${search}`
-    //         }`
-    //     );
-    // } catch (error) {
-
-    // }
 
     return (
         <VStack
@@ -232,11 +243,11 @@ export function Home() {
                     position='absolute'
                     zIndex={1}
                     right={1}
-                    mt={2}
-                    mr={2}
+
                 >
                     <TouchableOpacity
-                        onPress={handleSubmit(handleSearchWithName)}
+                        onPress={handleSubmit(handleSearchWithFilters)}
+                        style={{ padding: 7 }}
                     >
                         <Icon
                             as={Entypo}
@@ -246,11 +257,11 @@ export function Home() {
                         />
                     </TouchableOpacity>
                     <Box
-                        w={0.8}
-                        mx={3}
+                        w={0.2}
+                        mx={1.5}
                         bg='gray.3'
                     ></Box>
-                    <TouchableOpacity onPress={() => setBottomSheetOpen(true)}>
+                    <TouchableOpacity onPress={() => setBottomSheetOpen(true)} style={{ padding: 7 }}>
                         <Icon
                             as={SimpleLineIcons}
                             name='equalizer'
@@ -274,31 +285,34 @@ export function Home() {
 
             </Box>
 
-            <FlatList
-                numColumns={2}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                data={products}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                    <ProductCard
-                        source={{ uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }}
-                        avatar={item.user?.avatar}
-                        isNew={item.is_new}
-                        name={item.name}
-                        price={item.price}
+            {
+                isLoading ? <Loading /> :
+                    <FlatList
+                        numColumns={2}
+                        columnWrapperStyle={{ justifyContent: 'space-between' }}
+                        data={products}
+                        keyExtractor={item => item.id}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item }) => (
+                            <ProductCard
+                                source={{ uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }}
+                                avatar={item.user?.avatar}
+                                isNew={item.is_new}
+                                name={item.name}
+                                price={item.price}
+                            />
+                        )}
+                        ListEmptyComponent={
+                            <Text
+                                alignSelf='center'
+                                fontFamily='heading'
+                                mt={20}
+                            >
+                                Não tem produtos cadastrados
+                            </Text>
+                        }
                     />
-                )}
-                ListEmptyComponent={
-                    <Text
-                        alignSelf='center'
-                        fontFamily='heading'
-                        mt={20}
-                    >
-                        Não tem produtos cadastrados
-                    </Text>
-                }
-            />
+            }
 
             {
                 bottomSheetOpen ?
@@ -400,6 +414,7 @@ export function Home() {
 
                                 <Button
                                     title="Aplicar filtros"
+                                    onPress={() => handleSearchWithFilters()}
                                     flex={1}
                                 />
                             </HStack>
