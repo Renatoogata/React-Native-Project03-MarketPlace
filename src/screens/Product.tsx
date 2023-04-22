@@ -36,7 +36,6 @@ export function Product() {
             throw (error)
         }
     }
-
     const avatar = product.user?.avatar
 
     useEffect(() => {
@@ -149,7 +148,7 @@ export function Product() {
                         numberOfLines={5}
                         flexShrink={1}
                     >
-                        jd sajdskla jdsalkdjs kaldjslakjd sakldjsakld sakldjsa kldskalj dsakldjsa kldsak dklsadj sakldksald sakl jdsaklj dskaldksald kslajd ksladkslajdklsa jkdlsaj dklsadklasj dklsajdsklaj dakljdsakldj sakld jsakldsjaklsaj kldsajkdsla
+                        {product.description}
                     </Text>
                 </Box>
 
@@ -212,16 +211,20 @@ export function Product() {
                     color='blue.regular'
                     numberOfLines={1}
                     flexShrink={1}
+
                 >
                     R$ {' '}
                     <Text
                         fontSize='lg'
+                        numberOfLines={1}
+                        flexShrink={1}
                     >
                         {product.price}
                     </Text>
                 </Text>
 
                 <Button
+                    iconName="whatsapp"
                     title="Entrar em contato"
                     variant='blue'
                     w={180}
