@@ -24,6 +24,8 @@ import { ProductCard } from "@components/ProductCard";
 import { ProductType } from "@components/ProductType";
 import { ProductDTO } from "src/dtos/ProductDTO";
 import { Loading } from "@components/Loading";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 
 type FormDataProps = {
@@ -38,6 +40,7 @@ export function Home() {
     const { colors } = useTheme();
     const { user } = useAuth();
     const toast = useToast();
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -56,6 +59,13 @@ export function Home() {
     const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
     const snapPoints = useMemo(() => ["65%", "80%",], []);
 
+    function handleOpenMyProducts() {
+        navigation.navigate('myproducts')
+    }
+
+    function handleOpenProductDetail(productId: string) {
+        navigation.navigate('product', { productId })
+    }
 
     const handleSheetChanges = useCallback((index: number) => {
         console.log('handleSheetChanges', index);
@@ -204,14 +214,16 @@ export function Home() {
                         fontFamily='heading'
                         mb={-1}
                     >
-                        {activeProducts.length}
+                        {!activeProducts ? <Loading /> : activeProducts.length}
                     </Text>
                     <Text>
                         anúncios ativos
                     </Text>
                 </VStack>
 
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handleOpenMyProducts}
+                >
                     <HStack
                         alignItems='center'
                     >
@@ -303,6 +315,7 @@ export function Home() {
                                 isNew={item.is_new}
                                 name={item.name}
                                 price={item.price}
+                                onPress={() => handleOpenProductDetail(item.id)}
                             />
                         )}
                         ListEmptyComponent={
