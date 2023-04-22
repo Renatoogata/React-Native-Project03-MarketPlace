@@ -35,7 +35,7 @@ export function CarouselImageProduct({ productId }: Props) {
             <Carousel
                 loop
                 width={width}
-                height={320}
+                height={260}
                 autoPlay={true}
                 data={product.product_images}
                 scrollAnimationDuration={2000}

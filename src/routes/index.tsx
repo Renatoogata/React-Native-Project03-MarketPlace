@@ -5,6 +5,7 @@ import { useAuth } from '@hooks/useAuth';
 
 import { AuthRoutes } from "./auth.routes";
 import { AppRoutes } from "./app.routes";
+import { AppRoutesStack } from "./appStack.routes";
 
 import { Loading } from "@components/Loading";
 
@@ -24,7 +25,7 @@ export function Routes() {
             theme={theme}
         >
             {
-                user.id ? <AppRoutes /> : <AuthRoutes />
+                user.id ? <AppRoutesStack /> : <AuthRoutes />
             }
         </NavigationContainer>
     )

@@ -13,6 +13,7 @@ import { api } from "@services/api";
 
 import Avatar from '@assets/avatar.png'
 import MyProductsIcon from '@assets/IconMyProducts.svg'
+import ProductImage from '@assets/ImagemPadraoCompra.png'
 
 import { AppError } from "@utils/AppError";
 
@@ -24,8 +25,10 @@ import { ProductCard } from "@components/ProductCard";
 import { ProductType } from "@components/ProductType";
 import { ProductDTO } from "src/dtos/ProductDTO";
 import { Loading } from "@components/Loading";
+
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 
 
 type FormDataProps = {
@@ -41,6 +44,7 @@ export function Home() {
     const { user } = useAuth();
     const toast = useToast();
     const navigation = useNavigation<AppNavigatorRoutesProps>();
+    const navigationStack = useNavigation<AppNavigatorStackRoutesProps>();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -64,7 +68,7 @@ export function Home() {
     }
 
     function handleOpenProductDetail(productId: string) {
-        navigation.navigate('product', { productId })
+        navigationStack.navigate('product', { productId })
     }
 
     const handleSheetChanges = useCallback((index: number) => {
@@ -310,7 +314,11 @@ export function Home() {
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => (
                             <ProductCard
-                                source={{ uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }}
+                                source={
+                                    item.product_images
+                                        ? { uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }
+                                        : ProductImage
+                                }
                                 avatar={item.user?.avatar}
                                 isNew={item.is_new}
                                 name={item.name}

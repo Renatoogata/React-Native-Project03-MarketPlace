@@ -7,6 +7,7 @@ import { useAuth } from '@hooks/useAuth';
 import { Home } from '@screens/Home';
 import { MyProducts } from '@screens/MyProducts';
 import { Product } from '@screens/Product';
+import { AppRoutesStack } from './appStack.routes'
 
 import HomeIcon from '@assets/IconHome.svg'
 import MyProductsIcon from '@assets/IconMyProducts.svg'
@@ -16,14 +17,14 @@ import LogOutIcon from '@assets/IconLogOut.svg'
 
 type AppRoutes = {
     home: undefined,
-    product: { productId: string }
-    myproducts: undefined
-    logout: undefined
+    myproducts: undefined,
+    logout: undefined,
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
 
 const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
+
 
 export function AppRoutes() {
     const { colors, sizes } = useTheme();
@@ -86,14 +87,14 @@ export function AppRoutes() {
                     )
                 }}
             />
-
+            {/* 
             <Screen
                 name='product'
                 component={Product}
                 options={{
-                    tabBarButton: () => null
+                    tabBarButton: () => null,
                 }}
-            />
+            /> */}
         </Navigator>
     )
 }

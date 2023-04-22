@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Box, HStack, Icon, Text, VStack } from "native-base";
+import { Box, FlatList, HStack, Icon, ScrollView, Text, VStack } from "native-base";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { AntDesign } from '@expo/vector-icons'
@@ -13,7 +13,7 @@ import { ProductDTO } from "src/dtos/ProductDTO";
 import { UserPhoto } from "@components/UserPhoto";
 
 import Avatar from '@assets/avatar.png'
-import { ProductType } from "@components/ProductType";
+import { Button } from "@components/Button";
 
 
 
@@ -32,8 +32,6 @@ export function Product() {
         try {
             const response = await api.get(`/products/${productId}`)
             setProduct(response.data);
-
-            console.log(response.data)
         } catch (error) {
             throw (error)
         }
@@ -50,65 +48,185 @@ export function Product() {
     }
 
     return (
-        <VStack
-            bg='gray.6'
-            flex={1}
-            px={6}
-            pt={12}
-        >
-            <TouchableOpacity
-                onPress={handleGoBack}
+        <>
+            <VStack
+                bg='gray.6'
+                flex={1}
+                px={6}
+                pt={10}
             >
-                <Icon
-                    as={AntDesign}
-                    name="arrowleft"
-                    size={7}
-                    color='gray.1'
-                />
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handleGoBack}
+                >
+                    <Icon
+                        as={AntDesign}
+                        name="arrowleft"
+                        size={7}
+                        color='gray.1'
+                    />
+                </TouchableOpacity>
 
-            <Box
-                ml={-6}
-                pt={4}
-            >
-                <CarouselImageProduct
-                    productId={productId}
-                />
-            </Box>
+                <Box
+                    ml={-6}
+                    pt={2}
+                >
+                    <CarouselImageProduct
+                        productId={productId}
+                    />
+                </Box>
 
-            <HStack
-                mt={340}
-                alignItems='center'
-            >
-                <UserPhoto
-                    source={
-                        avatar
-                            ? { uri: `${api.defaults.baseURL}/images/${avatar}` }
-                            : Avatar
-                    }
-                    alt="foto de perfil"
-                    size={8}
-                    border={2}
-                />
+                <HStack
+                    mt={270}
+                    alignItems='center'
+                >
+                    <UserPhoto
+                        source={
+                            avatar
+                                ? { uri: `${api.defaults.baseURL}/images/${avatar}` }
+                                : Avatar
+                        }
+                        alt="foto de perfil"
+                        size={7}
+                        border={2}
+                    />
+
+                    <Text
+                        ml={2}
+                        color='gray.1'
+                        fontSize='md'
+                        numberOfLines={1}
+                        flexShrink={1}
+                    >
+                        {product.user?.name}
+                    </Text>
+                </HStack>
 
                 <Text
-                    ml={2}
-                    color='gray.1'
-                    fontSize='md'
+                    mt={3}
+                    bg='gray.5'
+                    w={14}
+                    rounded="2xl"
+                    textAlign='center'
+                    fontSize='xs'
+                    fontFamily='heading'
                 >
-                    {product.user?.name}
+                    {product.is_new ? "NOVO" : "USADO"}
                 </Text>
-            </HStack>
 
-            <Text
-                mt={6}
-                bg='gray.5'
-                w={14}
-                rounded="2xl"
-                textAlign='center'
+                <HStack
+                    mt={2}
+                    alignItems='center'
+                    justifyContent='space-between'
+                >
+                    <Text
+                        fontSize='lg'
+                        fontFamily='heading'
+                        numberOfLines={1}
+                        flexShrink={1}
+                    >
+                        {product.name}
+                    </Text>
+                    <Text
+                        fontFamily='heading'
+                        color='blue.light'
+                        numberOfLines={1}
+                        flexShrink={1}
+                    >
+                        R$ {' '}
+                        <Text
+                            fontSize='lg'
+                        >
+                            {product.price}
+                        </Text>
+                    </Text>
+                </HStack>
+
+                <Box>
+                    <Text
+                        mt={2}
+                        fontSize='sm'
+                        color='gray.2'
+                        numberOfLines={5}
+                        flexShrink={1}
+                    >
+                        jd sajdskla jdsalkdjs kaldjslakjd sakldjsakld sakldjsa kldskalj dsakldjsa kldsak dklsadj sakldksald sakl jdsaklj dskaldksald kslajd ksladkslajdklsa jkdlsaj dklsadklasj dklsajdsklaj dakljdsakldj sakld jsakldsjaklsaj kldsajkdsla
+                    </Text>
+                </Box>
+
+
+                <HStack
+                    mt={2}
+                >
+                    <Text
+                        color='gray.2'
+                        fontFamily="heading"
+                    >
+                        Aceita troca?
+                    </Text>
+                    <Text
+                        ml={2}
+                        color='gray.2'
+                    >
+                        {product.accept_trade ? "Sim" : "Não"}
+                    </Text>
+                </HStack>
+
+                <VStack
+                    mt={2}
+                >
+                    <Text
+                        fontFamily='heading'
+                        color='gray.2'
+                    >
+                        Meios de pagamento:
+                    </Text>
+
+                    <FlatList
+                        data={product.payment_methods}
+                        keyExtractor={item => item.key}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item }) => (
+                            <HStack>
+                                <Text
+                                    color='gray.2'
+                                    numberOfLines={1}
+                                    flexShrink={1}
+                                >
+                                    {item.name}
+                                </Text>
+                            </HStack>
+                        )}
+                    />
+                </VStack>
+            </VStack>
+
+            <HStack
+                py={2}
+                px={6}
+                bg='rgba(100, 122, 199, 0.2)'
+                justifyContent='space-between'
+                alignItems='center'
             >
-                NOVO
-            </Text>
-        </VStack>
+                <Text
+                    fontFamily='heading'
+                    color='blue.regular'
+                    numberOfLines={1}
+                    flexShrink={1}
+                >
+                    R$ {' '}
+                    <Text
+                        fontSize='lg'
+                    >
+                        {product.price}
+                    </Text>
+                </Text>
+
+                <Button
+                    title="Entrar em contato"
+                    variant='blue'
+                    w={180}
+                />
+            </HStack>
+        </>
     )
 }
