@@ -323,6 +323,7 @@ export function Home() {
                                 isNew={item.is_new}
                                 name={item.name}
                                 price={item.price}
+                                isActive={item.is_active}
                                 onPress={() => handleOpenProductDetail(item.id)}
                             />
                         )}

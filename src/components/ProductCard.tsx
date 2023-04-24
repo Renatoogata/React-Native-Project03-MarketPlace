@@ -11,16 +11,15 @@ import { ProductType } from "./ProductType";
 
 
 type Props = IImageProps & TouchableOpacityProps & {
-    avatar: string | undefined;
+    avatar?: string;
     isNew: boolean;
     name: string;
     price: number;
+    isActive: boolean;
 };
 
 
-export function ProductCard({ avatar, isNew, name, price, ...rest }: Props) {
-    const { user } = useAuth();
-
+export function ProductCard({ avatar, isNew, name, price, isActive, ...rest }: Props) {
     return (
         <VStack
             mb={4}
@@ -41,27 +40,50 @@ export function ProductCard({ avatar, isNew, name, price, ...rest }: Props) {
 
                         {...rest}
                     />
-
                     <HStack
                         justifyContent='space-between'
                     >
-                        <UserPhoto
-                            source={{ uri: `${api.defaults.baseURL}/images/${avatar}` }}
-                            size={8}
-                            alt="Foto de perfil"
-                            border={1.5}
-                            borderColor='SECONDARY'
-                            ml={1}
-                            mt={1}
-                        />
+                        {
+                            !avatar ? <Box /> :
+                                <UserPhoto
+                                    source={{ uri: `${api.defaults.baseURL}/images/${avatar}` }}
+                                    size={8}
+                                    alt="Foto de perfil"
+                                    border={1.5}
+                                    borderColor='SECONDARY'
+                                    ml={1}
+                                    mt={1}
+                                />
+                        }
 
                         <ProductType
                             isNew={isNew}
                         />
                     </HStack>
+                    {
+                        isActive ? null :
+                            <>
+                                <Box
+                                    width={150}
+                                    height={100}
+                                    bg='gray.2'
+                                    position='absolute'
+                                    opacity={0.5}
+                                    rounded="md"
+                                />
+                                <Text
+                                    mt={12}
+                                    ml={2}
+                                    fontSize='xs'
+                                    fontFamily='heading'
+                                    color='gray.7'
+                                >
+                                    ANÚNCIO DESATIVADO
+                                </Text>
+                            </>
+                    }
                 </TouchableOpacity>
             </Box>
-
             <Text
                 color='gray.2'
                 fontSize='sm'
