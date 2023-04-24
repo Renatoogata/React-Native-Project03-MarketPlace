@@ -48,16 +48,22 @@ export function Home() {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const [activeProducts, setActiveProducts] = useState<ProductDTO[]>([]);
+    const [userProducts, setUserProducts] = useState<ProductDTO[]>([]);
     const [products, setProducts] = useState<ProductDTO[]>([]);
     const [isNew, setIsNew] = useState<boolean>();
     const [acceptTrade, setAcceptTrade] = useState<boolean>();
     const [paymentMethods, setPaymentMethods] = useState<string[]>(['pix', 'boleto', 'cash', 'deposit', 'card'])
 
+    const userActiveProducts = userProducts.filter((product) => {
+        if (product.is_active) {
+            return product
+        }
+    })
+
+
     const { control, handleSubmit } = useForm<FormDataProps>({
         resolver: yupResolver(searchSchema)
     })
-
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
@@ -127,7 +133,7 @@ export function Home() {
             setProducts(response.data);
 
             const myProducts = await api.get('/users/products')
-            setActiveProducts(myProducts.data);
+            setUserProducts(myProducts.data)
 
         } catch (error) {
             const isAppError = error instanceof AppError;
@@ -218,7 +224,7 @@ export function Home() {
                         fontFamily='heading'
                         mb={-1}
                     >
-                        {!activeProducts ? <Loading /> : activeProducts.length}
+                        {!userProducts ? <Loading /> : userActiveProducts.length}
                     </Text>
                     <Text>
                         anúncios ativos
