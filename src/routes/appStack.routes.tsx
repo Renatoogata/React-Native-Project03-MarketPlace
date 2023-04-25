@@ -2,12 +2,23 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-na
 
 import { Product } from "@screens/Product";
 import { AppRoutes } from "./app.routes";
-import { CreateProduct } from "@screens/CreateProduct";
+import { CreateProduct, PhotoProps } from "@screens/CreateProduct";
+import { CreateProductPreview } from "@screens/CreateProductPreview";
+
 
 type AppRoutes = {
     product: { productId: string }
     bottonTabRoutes: undefined
     createProduct: undefined
+    createProductPreview: {
+        productImages: PhotoProps[],
+        name: string,
+        description: string,
+        isNew: string,
+        price: string,
+        acceptTrade: boolean,
+        paymentMethods: string[],
+    }
 }
 
 export type AppNavigatorStackRoutesProps = NativeStackNavigationProp<AppRoutes>;
@@ -30,6 +41,11 @@ export function AppRoutesStack() {
             <Screen
                 name="createProduct"
                 component={CreateProduct}
+            />
+
+            <Screen
+                name="createProductPreview"
+                component={CreateProductPreview}
             />
         </Navigator>
     )

@@ -1,33 +1,57 @@
-import { useEffect, useState } from "react";
-import { Box, HStack, Icon, Text, VStack, useToast, Image, Checkbox, Radio, ScrollView, Switch } from "native-base";
+import { useState } from "react";
+import { Box, HStack, Icon, Text, useToast, Image, Checkbox, Radio, ScrollView, Switch, Skeleton } from "native-base";
 import { TouchableOpacity } from "react-native";
-import { AntDesign } from '@expo/vector-icons'
 
+
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup'
+
+import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 
-import ProductImage from '@assets/ImagemPadraoCompra.png'
-
+import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 import { useNavigation } from "@react-navigation/native";
-import { Loading } from "@components/Loading";
+
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { Loading } from "@components/Loading";
 
-type PhotoProps = {
+export type PhotoProps = {
     uri: string;
     name: string;
     type: string;
 }
 
+type FormDataProps = {
+    name: string;
+    description: string;
+    price: string;
+}
+
+const signUpSchema = yup.object({
+    name: yup.string().min(3).required('Digite o nome do item.'),
+    description: yup.string().min(10).max(200).required('Digite a descrição do produto(min:10, max:200)'),
+    price: yup.number().required('Informe o valor do produto'),
+})
+
+const PHOTO_SIZE = 100;
+
 export function CreateProduct() {
     const [isLoading, setIsLoading] = useState(false);
     const [productImages, setProductImages] = useState<PhotoProps[]>([]);
-    const [paymentMethod, setPaymentMethod] = useState();
     const [isNew, setIsnew] = useState("new");
+    const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
     const [acceptTrade, setAcceptTrade] = useState(false);
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigatorStackRoutesProps>();
     const toast = useToast();
+
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+        resolver: yupResolver(signUpSchema)
+    })
+
 
     function handleGoBack() {
         navigation.goBack();
@@ -91,6 +115,46 @@ export function CreateProduct() {
         setProductImages(data);
     }
 
+    function handleCreateProductPreview({ name, description, price }: FormDataProps) {
+        try {
+            setIsLoading(true);
+            if (productImages.length === 0 || productImages.length > 4) {
+                return toast.show({
+                    title: "O aúncio deve conter de 1 a 3 fotos",
+                    placement: 'top',
+                    bgColor: 'red.light',
+                })
+            }
+
+            if (paymentMethods.length === 0) {
+                return toast.show({
+                    title: "Seleciona pelo menos um método de pagamento",
+                    placement: 'top',
+                    bgColor: 'red.light'
+                })
+            }
+
+            navigation.navigate('createProductPreview', {
+                productImages,
+                name,
+                description,
+                isNew,
+                price,
+                acceptTrade,
+                paymentMethods,
+            })
+
+        } catch (error) {
+            toast.show({
+                title: "Não foi possível criar a preview do produto",
+                placement: 'top',
+                bgColor: 'red.light',
+            })
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <>
             <ScrollView
@@ -152,22 +216,25 @@ export function CreateProduct() {
                         productImages.map((image) => (
                             <Box
                                 mr={4}
-                                width={100}
-                                height={100}
+                                width={PHOTO_SIZE}
+                                height={PHOTO_SIZE}
                                 rounded='lg'
                                 bg='gray.5'
                                 alignItems='center'
                                 justifyContent='center'
                                 key={image.uri}
                             >
-                                <Image
-                                    source={{ uri: image.uri }}
-                                    alt="imagem do produto"
-                                    w={100}
-                                    h={100}
-                                    rounded="lg"
-
-                                />
+                                {
+                                    isLoading ?
+                                        <Loading /> :
+                                        <Image
+                                            source={{ uri: image.uri }}
+                                            alt="imagem do produto"
+                                            w={PHOTO_SIZE}
+                                            h={PHOTO_SIZE}
+                                            rounded="lg"
+                                        />
+                                }
 
                                 <TouchableOpacity
                                     style={{ position: 'absolute', right: 1, top: 1 }}
@@ -222,15 +289,34 @@ export function CreateProduct() {
                     Sobre o Produto
                 </Text>
 
-                <Input
-                    placeholder="Título do anúncio"
+                <Controller
+                    control={control}
+                    name="name"
+                    render={({ field: { onChange, value } }) => (
+                        <Input
+                            placeholder="Título do anúncio"
+                            keyboardType="email-address"
+                            onChangeText={onChange}
+                            value={value}
+                            errorMessage={errors.name?.message}
+                        />
+                    )}
                 />
 
-                <Input
-                    placeholder="Descrição do Produto"
-                    numberOfLines={5}
-                    multiline
-                    textAlignVertical="top"
+                <Controller
+                    control={control}
+                    name="description"
+                    render={({ field: { onChange, value } }) => (
+                        <Input
+                            placeholder="Descrição do Produto"
+                            numberOfLines={5}
+                            multiline
+                            textAlignVertical="top"
+                            onChangeText={onChange}
+                            value={value}
+                            errorMessage={errors.description?.message}
+                        />
+                    )}
                 />
 
                 <Radio.Group
@@ -256,9 +342,18 @@ export function CreateProduct() {
                     Venda
                 </Text>
 
-                <Input
-                    placeholder="R$ 45,00"
-                    keyboardType="decimal-pad"
+                <Controller
+                    control={control}
+                    name="price"
+                    render={({ field: { onChange, value } }) => (
+                        <Input
+                            placeholder="R$ 45,00"
+                            keyboardType="decimal-pad"
+                            onChangeText={onChange}
+                            value={value}
+                            errorMessage={errors.price?.message}
+                        />
+                    )}
                 />
 
                 <Text
@@ -286,7 +381,7 @@ export function CreateProduct() {
                     Meios de Pagamento aceitos
                 </Text>
 
-                <Checkbox.Group onChange={setPaymentMethod} value={paymentMethod} accessibilityLabel="Método de pagamentos">
+                <Checkbox.Group onChange={setPaymentMethods} value={paymentMethods} accessibilityLabel="Método de pagamentos">
                     <Checkbox colorScheme='blue' value="boleto" defaultIsChecked><Text color='gray.3' fontSize={16}>Boleto</Text></Checkbox>
                     <Checkbox colorScheme='blue' value="pix"><Text color='gray.3' fontSize={16}>Pix</Text></Checkbox>
                     <Checkbox colorScheme='blue' value="cash"><Text color='gray.3' fontSize={16}>Dinheiro</Text></Checkbox>
@@ -308,12 +403,15 @@ export function CreateProduct() {
                     variant='gray5'
                     flex={1}
                     mr={2}
+                    onPress={handleGoBack}
                 />
 
                 <Button
                     title="Avançar"
                     variant='gray1'
                     flex={1}
+                    isLoading={isLoading}
+                    onPress={handleSubmit(handleCreateProductPreview)}
                 />
             </HStack>
         </>
