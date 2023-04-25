@@ -26,7 +26,7 @@ import { ProductType } from "@components/ProductType";
 import { ProductDTO } from "src/dtos/ProductDTO";
 import { Loading } from "@components/Loading";
 
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 
@@ -148,9 +148,9 @@ export function Home() {
         }
     }
 
-    useEffect(() => {
-        fetchProduts();
-    }, [])
+    useFocusEffect(useCallback(() => {
+        fetchProduts()
+    }, []))
 
     return (
         <VStack

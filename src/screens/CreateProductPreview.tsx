@@ -20,15 +20,6 @@ import { Button } from "@components/Button";
 import { AppError } from "@utils/AppError";
 
 
-type ProductImageProps = {
-    selected: boolean;
-    photo: {
-        uri: string;
-        name: string;
-        type: string;
-    }[];
-};
-
 type RouteParamsProps = {
     productImages: PhotoProps[],
     name: string,
@@ -56,7 +47,6 @@ export function CreateProductPreview() {
         navigation.goBack();
     }
 
-
     async function handleCreateProduct() {
         try {
             setIsLoading(true)
@@ -81,6 +71,7 @@ export function CreateProductPreview() {
                     "Content-Type": "multipart/form-data",
                 },
             });
+
 
             navigation.navigate('myProductById', { productId: response.data.id })
         } catch (error) {

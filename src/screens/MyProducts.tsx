@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Box, FlatList, HStack, Icon, Select, Text, useToast, VStack } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 
 import { api } from "@services/api";
@@ -60,9 +60,9 @@ export function MyProducts() {
         }
     }
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         fetchMyProducts();
-    }, [])
+    }, []))
 
     return (
         <VStack

@@ -39,7 +39,7 @@ export function MyProductById() {
     const width = Dimensions.get('window').width;
 
     function handleGoBack() {
-        navigation.goBack();
+        navigation.navigate('bottonTabRoutes');
     }
 
     function handleEditProduct() {
@@ -287,7 +287,7 @@ export function MyProductById() {
                 </HStack>
 
                 <Text
-                    mt={1}
+                    mt={2}
                     fontSize='sm'
                     color='gray.2'
                     numberOfLines={5}
