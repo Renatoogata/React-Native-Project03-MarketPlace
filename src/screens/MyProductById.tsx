@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Alert, Dimensions, TouchableOpacity, View } from "react-native";
 import { HStack, ScrollView, Text, VStack, Image, Icon, Box, useToast } from "native-base";
 
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 import { api } from "@services/api";
 
@@ -43,9 +43,8 @@ export function MyProductById() {
     }
 
     function handleEditProduct() {
-
+        navigation.navigate('editProduct', { productId })
     }
-
 
     async function handleInactiveOrActiveProduct() {
         Alert.alert(isActive ? "Desativar" : "Reativar", `Deseja ${isActive ? "Desativar" : "Ativar "} o anúncio?`, [
@@ -136,9 +135,9 @@ export function MyProductById() {
         }
     }
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         fetchProduct();
-    }, [productId])
+    }, [productId]))
 
     return (
         <ScrollView

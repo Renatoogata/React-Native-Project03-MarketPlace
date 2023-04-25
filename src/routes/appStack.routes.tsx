@@ -5,6 +5,7 @@ import { AppRoutes } from "./app.routes";
 import { CreateProduct, PhotoProps } from "@screens/CreateProduct";
 import { CreateProductPreview } from "@screens/CreateProductPreview";
 import { MyProductById } from "@screens/MyProductById";
+import { EditProduct } from "@screens/EditProduct";
 
 
 type AppRoutes = {
@@ -21,6 +22,7 @@ type AppRoutes = {
         acceptTrade: boolean,
         paymentMethods: string[],
     }
+    editProduct: { productId: string }
 }
 
 export type AppNavigatorStackRoutesProps = NativeStackNavigationProp<AppRoutes>;
@@ -53,6 +55,11 @@ export function AppRoutesStack() {
             <Screen
                 name="myProductById"
                 component={MyProductById}
+            />
+
+            <Screen
+                name="editProduct"
+                component={EditProduct}
             />
         </Navigator>
     )
