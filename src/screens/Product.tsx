@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Box, FlatList, HStack, Icon, ScrollView, Text, VStack } from "native-base";
+import { Box, FlatList, HStack, Icon, Text, VStack } from "native-base";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import { CarouselImageProduct } from "@components/CarouselImageProduct";
 
 import { api } from "@services/api";
@@ -185,7 +185,14 @@ export function Product() {
                         keyExtractor={item => item.key}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => (
-                            <HStack>
+                            <HStack alignItems='center'>
+                                <Icon
+                                    as={MaterialCommunityIcons}
+                                    name={item.key === 'boleto' ? "barcode-scan" : item.key === 'deposit' ? "bank-outline" : item.key === 'pix' ? "qrcode-plus" : item.key === "cash" ? "cash" : "credit-card-outline"}
+                                    size={4}
+                                    mr={1}
+                                />
+
                                 <Text
                                     color='gray.2'
                                     numberOfLines={1}
