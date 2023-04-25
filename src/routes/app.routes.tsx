@@ -6,8 +6,6 @@ import { useAuth } from '@hooks/useAuth';
 
 import { Home } from '@screens/Home';
 import { MyProducts } from '@screens/MyProducts';
-import { Product } from '@screens/Product';
-import { AppRoutesStack } from './appStack.routes'
 
 import HomeIcon from '@assets/IconHome.svg'
 import MyProductsIcon from '@assets/IconMyProducts.svg'

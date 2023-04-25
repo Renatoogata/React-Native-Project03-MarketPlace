@@ -19,7 +19,7 @@ type Props = IImageProps & TouchableOpacityProps & {
 };
 
 
-export function ProductCard({ avatar, isNew, name, price, isActive, ...rest }: Props) {
+export function ProductCard({ avatar, isNew, name, price, isActive = true, ...rest }: Props) {
     return (
         <VStack
             mb={4}

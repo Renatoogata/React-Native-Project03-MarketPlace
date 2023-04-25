@@ -81,8 +81,8 @@ export function Home() {
         console.log('handleSheetChanges', index);
     }, []);
 
-    async function handleSearchProduct() {
-        const productsData = await api.get(`/products/`);
+    async function handleCreateProduct() {
+        navigationStack.navigate('createProduct')
     }
 
     function handleResetFilter() {
@@ -193,7 +193,7 @@ export function Home() {
                     width={33}
                     variant='gray1'
                     iconName="plus"
-                    onPress={handleSearchProduct}
+                    onPress={handleCreateProduct}
                 />
             </HStack>
             <Text

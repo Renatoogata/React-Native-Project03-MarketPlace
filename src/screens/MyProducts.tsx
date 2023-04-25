@@ -3,6 +3,9 @@ import { TouchableOpacity } from "react-native";
 import { Box, FlatList, HStack, Icon, Select, Text, useToast, VStack } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
+
 import { api } from "@services/api";
 
 import ProductImage from '@assets/ImagemPadraoCompra.png'
@@ -19,6 +22,7 @@ export function MyProducts() {
     const [isActive, setIsActive] = useState("all");
     const [myProducts, setMyProducts] = useState<ProductDTO[]>([])
 
+    const navigation = useNavigation<AppNavigatorStackRoutesProps>();
     const toast = useToast();
 
     const filter = isActive === "active" ? true : false;
@@ -29,6 +33,10 @@ export function MyProducts() {
         }
         return product.is_active === filter
     })
+
+    function handleCreateProduct() {
+        navigation.navigate('createProduct')
+    }
 
     async function fetchMyProducts() {
         try {
@@ -72,6 +80,7 @@ export function MyProducts() {
 
                 <TouchableOpacity
                     style={{ position: 'absolute', right: 1 }}
+                    onPress={handleCreateProduct}
                 >
                     <Icon
                         as={AntDesign}

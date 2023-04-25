@@ -4,7 +4,6 @@ import { useTheme } from 'native-base';
 import { useAuth } from '@hooks/useAuth';
 
 import { AuthRoutes } from "./auth.routes";
-import { AppRoutes } from "./app.routes";
 import { AppRoutesStack } from "./appStack.routes";
 
 import { Loading } from "@components/Loading";

@@ -2,10 +2,12 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-na
 
 import { Product } from "@screens/Product";
 import { AppRoutes } from "./app.routes";
+import { CreateProduct } from "@screens/CreateProduct";
 
 type AppRoutes = {
     product: { productId: string }
     bottonTabRoutes: undefined
+    createProduct: undefined
 }
 
 export type AppNavigatorStackRoutesProps = NativeStackNavigationProp<AppRoutes>;
@@ -25,7 +27,10 @@ export function AppRoutesStack() {
                 component={Product}
             />
 
-
+            <Screen
+                name="createProduct"
+                component={CreateProduct}
+            />
         </Navigator>
     )
 }

@@ -15,7 +15,7 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
         >
             <NativeBaseInput
                 bg="white"
-                h={11}
+                minH={11}
                 px={4}
                 borderWidth={0}
                 fontSize='md'
