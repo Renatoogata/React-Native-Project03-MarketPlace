@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { Box, FlatList, HStack, Icon, ScrollView, Text, VStack } from "native-base";
+import { TouchableOpacity, Linking } from "react-native";
+import { Box, HStack, Icon, ScrollView, Text, VStack } from "native-base";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
@@ -16,6 +16,7 @@ import { ProductDTO } from "src/dtos/ProductDTO";
 import { PaymentMethodDTO } from "src/dtos/PaymentMethodDTO";
 
 import { Button } from "@components/Button";
+import { useAuth } from "@hooks/useAuth";
 
 
 
@@ -27,9 +28,14 @@ export function Product() {
     const route = useRoute()
     const navigation = useNavigation<AppNavigatorRoutesProps>()
     const { productId } = route.params as RouteParamsProps;
+    const { user } = useAuth()
 
     const [product, setProduct] = useState<ProductDTO>({} as ProductDTO);
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDTO[]>([]);
+
+    async function handleContactNumber() {
+        await Linking.openURL(`whatsapp://send?text=${product.name}&phone=${user.phone}`)
+    }
 
     async function fetchProduct() {
         try {
@@ -245,6 +251,7 @@ export function Product() {
                     title="Entrar em contato"
                     variant='blue'
                     w={180}
+                    onPress={handleContactNumber}
                 />
             </HStack>
         </VStack>
