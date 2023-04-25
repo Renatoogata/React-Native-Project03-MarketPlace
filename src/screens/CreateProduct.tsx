@@ -32,7 +32,7 @@ type FormDataProps = {
 
 const signUpSchema = yup.object({
     name: yup.string().min(3).required('Digite o nome do item.'),
-    description: yup.string().min(10).max(200).required('Digite a descrição do produto(min:10, max:200)'),
+    description: yup.string().min(10).max(200).trim().required('Digite a descrição do produto(min:10, max:200)'),
     price: yup.number().required('Informe o valor do produto'),
 })
 

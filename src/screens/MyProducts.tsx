@@ -99,7 +99,7 @@ export function MyProducts() {
                 <Text
                     color='gray.2'
                 >
-                    {productsFiltered.length} {productsFiltered.length > 1 ? "anúncios" : "anúncio"}
+                    {productsFiltered.length} {productsFiltered.length === 1 ? "anúncio" : "anúncios"}
                 </Text>
 
                 <Box

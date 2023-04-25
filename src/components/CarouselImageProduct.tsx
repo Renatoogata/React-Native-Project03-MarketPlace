@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, Text, View } from 'react-native';
-import { Box, Image } from 'native-base';
+import { Image } from 'native-base';
 
 import Carousel from 'react-native-reanimated-carousel';
 
