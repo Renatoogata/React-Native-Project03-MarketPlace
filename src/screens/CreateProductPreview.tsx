@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
-import { Center, Text, VStack, Image, Box, HStack, Icon, ScrollView } from "native-base"
+import { Center, Text, VStack, Image, Box, HStack, Icon, ScrollView, useToast } from "native-base"
+
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 
 import Carousel from 'react-native-reanimated-carousel';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -8,15 +11,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { api } from "@services/api";
 import { UserDTO } from "src/dtos/UserDTO";
 
-import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { PhotoProps } from "./CreateProduct";
-import { Loading } from "@components/Loading";
 import { UserPhoto } from "@components/UserPhoto";
-
 import Avatar from '@assets/avatar.png'
-import { Button } from "@components/Button";
 
+import { Button } from "@components/Button";
+import { AppError } from "@utils/AppError";
+
+
+type ProductImageProps = {
+    selected: boolean;
+    photo: {
+        uri: string;
+        name: string;
+        type: string;
+    }[];
+};
 
 type RouteParamsProps = {
     productImages: PhotoProps[],
@@ -33,23 +44,56 @@ export function CreateProductPreview() {
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState<UserDTO>({} as UserDTO)
 
+    const toast = useToast()
     const route = useRoute();
     const avatar = user.avatar;
-    const navigation = useNavigation()
+    const navigation = useNavigation<AppNavigatorStackRoutesProps>()
+    const width = Dimensions.get('window').width;
 
     const { productImages, name, description, isNew, price, acceptTrade, paymentMethods } = route.params as RouteParamsProps
-
-
-    console.log("Testezada ", description)
-
-    const width = Dimensions.get('window').width;
 
     function handleGoBack() {
         navigation.goBack();
     }
 
-    async function handleCreateProduct() {
 
+    async function handleCreateProduct() {
+        try {
+            setIsLoading(true)
+            const is_new = isNew === 'new' ? true : false
+            const priceInt = parseInt(price)
+
+            const response = await api.post("/products", { name, description, is_new, price: priceInt, accept_trade: acceptTrade, payment_methods: paymentMethods })
+
+            const imageData = new FormData()
+            productImages.forEach((item) => {
+                const imageFile = {
+                    ...item,
+                    name: user.name + "." + item.name
+                } as any
+
+                imageData.append("images", imageFile)
+            })
+            imageData.append("product_id", response.data.id)
+
+            await api.post("/products/images", imageData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            navigation.navigate('myProductById', { productId: response.data.id })
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível criar anúncio. Tente novamente mais tarde"
+            toast.show({
+                title,
+                placement: 'top',
+                bg: 'red.light'
+            })
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     async function fetchUser() {
@@ -253,16 +297,18 @@ export function CreateProductPreview() {
 
             >
                 <Button
-                    title="Cancelar"
+                    title="Voltar e editar"
                     variant='gray5'
+                    iconName="arrow-left"
                     flex={1}
                     mr={2}
                     onPress={handleGoBack}
                 />
 
                 <Button
-                    title="Avançar"
-                    variant='gray1'
+                    title="Publicar"
+                    variant='blue'
+                    iconName="tag-outline"
                     flex={1}
                     isLoading={isLoading}
                     onPress={(handleCreateProduct)}

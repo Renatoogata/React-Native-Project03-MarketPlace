@@ -143,7 +143,6 @@ export function CreateProduct() {
                 acceptTrade,
                 paymentMethods,
             })
-
         } catch (error) {
             toast.show({
                 title: "Não foi possível criar a preview do produto",

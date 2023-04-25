@@ -4,12 +4,14 @@ import { Product } from "@screens/Product";
 import { AppRoutes } from "./app.routes";
 import { CreateProduct, PhotoProps } from "@screens/CreateProduct";
 import { CreateProductPreview } from "@screens/CreateProductPreview";
+import { MyProductById } from "@screens/MyProductById";
 
 
 type AppRoutes = {
     product: { productId: string }
     bottonTabRoutes: undefined
     createProduct: undefined
+    myProductById: { productId: string }
     createProductPreview: {
         productImages: PhotoProps[],
         name: string,
@@ -46,6 +48,11 @@ export function AppRoutesStack() {
             <Screen
                 name="createProductPreview"
                 component={CreateProductPreview}
+            />
+
+            <Screen
+                name="myProductById"
+                component={MyProductById}
             />
         </Navigator>
     )

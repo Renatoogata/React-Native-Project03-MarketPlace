@@ -38,6 +38,10 @@ export function MyProducts() {
         navigation.navigate('createProduct')
     }
 
+    function handleOpenMyProductById(id: string) {
+        navigation.navigate('myProductById', { productId: id })
+    }
+
     async function fetchMyProducts() {
         try {
             setIsLoading(true);
@@ -138,7 +142,7 @@ export function MyProducts() {
                             renderItem={({ item }) => (
                                 <ProductCard
                                     source={
-                                        item.product_images
+                                        item.product_images[0]
                                             ? { uri: `${api.defaults.baseURL}/images/${item.product_images[0].path}` }
                                             : ProductImage
                                     }
@@ -146,6 +150,7 @@ export function MyProducts() {
                                     name={item.name}
                                     price={item.price}
                                     isActive={item.is_active}
+                                    onPress={() => handleOpenMyProductById(item.id)}
                                 />
                             )}
                             ListEmptyComponent={
