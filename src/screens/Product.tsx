@@ -28,13 +28,21 @@ export function Product() {
     const route = useRoute()
     const navigation = useNavigation<AppNavigatorRoutesProps>()
     const { productId } = route.params as RouteParamsProps;
-    const { user } = useAuth()
 
+    const [isLoading, setIsLoading] = useState(false);
     const [product, setProduct] = useState<ProductDTO>({} as ProductDTO);
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDTO[]>([]);
 
     async function handleContactNumber() {
-        await Linking.openURL(`whatsapp://send?text=${product.name}&phone=${user.phone}`)
+        try {
+            setIsLoading(true)
+            await Linking.openURL(`whatsapp://send?text=${product.name}&phone=${product.user?.tel}`)
+        } catch (error) {
+            throw (error)
+        } finally {
+            setIsLoading(false)
+        }
+
     }
 
     async function fetchProduct() {
@@ -251,6 +259,7 @@ export function Product() {
                     title="Entrar em contato"
                     variant='blue'
                     w={180}
+                    isLoading={isLoading}
                     onPress={handleContactNumber}
                 />
             </HStack>

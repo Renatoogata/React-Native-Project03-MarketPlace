@@ -135,7 +135,6 @@ export function EditProduct() {
             //         bgColor: 'red.light',
             //     })
             // }
-
             if (paymentMethods.length === 0) {
                 return toast.show({
                     title: "Seleciona pelo menos um método de pagamento",

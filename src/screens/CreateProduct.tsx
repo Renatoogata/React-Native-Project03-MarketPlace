@@ -64,7 +64,7 @@ export function CreateProduct() {
                 const photoSelect = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
                     quality: 1,
-                    aspect: [16, 9],
+                    aspect: [4, 3],
                     allowsEditing: true
                 });
 
