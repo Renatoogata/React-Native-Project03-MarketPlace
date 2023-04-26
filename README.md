@@ -46,7 +46,7 @@ It's an online marketplace, you can register and search for products that you wa
 
 ```bash
     # Clone or Download Mobile Repository 
-    $ git clone https://github.com/Renatoogata/
+    $ git clone https://github.com/Renatoogata/React-Native-Project03-Marketspace.git
 ``` 
 
 ```bash
