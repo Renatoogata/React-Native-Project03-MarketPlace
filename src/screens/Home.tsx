@@ -30,7 +30,6 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { AppNavigatorStackRoutesProps } from "@routes/appStack.routes";
 
-
 type FormDataProps = {
     name?: string;
 }

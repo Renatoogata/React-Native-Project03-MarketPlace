@@ -13,7 +13,7 @@
 
 ## About 
  
-**Marketspace** is a project designed during rocketseat classes, putting in practices some tools to make the project more reliable and consistent.
+**Marketspace** is a challenge done in the rocketseat course, after some classes we have to build this app putting in practices some tools that we have learned following this design https://www.figma.com/file/CIvhyoji2zASYQKFGeWUEn/Marketspace/duplicate .
 
 It's an online marketplace, you can register and search for products that you wanna buy. Its very simple, register an account with your ID them you ready to go, just search anything or announce your stuff to sell.
 
